@@ -2,7 +2,7 @@ package com.nevilon.firefly.core
 
 import com.mongodb._
 import gridfs.{GridFSDBFile, GridFS}
-import java.io.File
+import java.io.{InputStream, File}
 import org.bson.types.ObjectId
 
 /**
@@ -36,6 +36,10 @@ class MongoWrapper {
     fsStorage.findOne(objectId)
   }
 
+  def updateFileDoc(fileDoc:DBObject){
+    coll.save(fileDoc)
+  }
+
   def listFileDocs():DBCursor={
     coll.find()
   }
@@ -52,7 +56,25 @@ class MongoWrapper {
     doc.put("upload_date", fsFile.getUploadDate)
     doc.put("file_size", fsFile.getLength)
     coll.insert(doc)
+
+    println(doc)
     //val imageForOutput = fsStorage.findOne(newFileName_)
+  }
+
+  def getFileStream(esId:String):InputStream={
+    val fileDoc = coll.findOne(new BasicDBObject("es_id", esId))
+    val file = fsStorage.findOne(new ObjectId(fileDoc.get("file_oid").toString  ))
+    println(fileDoc)
+    println(file)
+    file.getInputStream
+
+
+    /*
+    val imageForOutput = fsStorage.findOne(newFileName)
+    imageForOutput.writeTo("c:\\JavaWebHostingNew.pn")
+    println(imageForOutput)
+    */
+
   }
 
 }

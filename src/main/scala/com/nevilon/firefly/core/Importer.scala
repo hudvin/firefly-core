@@ -15,17 +15,19 @@ object Importer {
   private var mongoWrapper:MongoWrapper = null
 
   def main(args: Array[String]) {
-    /*
     mongoWrapper = new MongoWrapper()
     mongoWrapper.connect()
+
+    //val a = mongoWrapper.getFileStream("a99Aahn3SVaQbc159AyxMQ")
+    //println(a)
+
     mongoWrapper.cleanMongo()
-    */
-    val result = ESWrapper.sendSearchQuery("amplifier")
-    println(result)
+  //  val result = ESWrapper.sendSearchQuery("amplifier")
+  //  println(result)
     //ESWrapper.search()
 
-    //uploadAllToMongo()
-   // sendToES()
+    uploadAllToMongo()
+   sendToES()
   }
 
   def uploadAllToMongo(){
@@ -38,7 +40,10 @@ object Importer {
     mongoWrapper.listFileDocs().iterator().foreach(dbFile=>{
       val fileOid = dbFile.get("file_oid").toString
       val fsFile = mongoWrapper.findFile(new ObjectId(fileOid))
-      ESWrapper.sendToES(fsFile.getInputStream)
+      val esId  = ESWrapper.sendToES(fsFile.getInputStream)
+      dbFile.put("es_id",esId)
+      println(dbFile)
+      mongoWrapper.updateFileDoc(dbFile)
     })
   }
 

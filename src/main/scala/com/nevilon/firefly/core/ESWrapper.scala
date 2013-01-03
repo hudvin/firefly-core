@@ -18,7 +18,7 @@ import scala.Predef._
  */
 object ESWrapper {
 
-  def sendToES(is: InputStream) {
+  def sendToES(is: InputStream):String = {
     val bytes = IOUtils.toByteArray(is)
     val encoded = Base64.encodeBase64(bytes)
 
@@ -30,6 +30,9 @@ object ESWrapper {
     val requestEntity = new StringRequestEntity(json, "application/json", "UTF-8")
     post.setRequestEntity(requestEntity)
     val response = httpClient.executeMethod(post)
+    val responseBody = post.getResponseBodyAsString
+    val jsonResponse  = Json.parse(responseBody).asInstanceOf[util.LinkedHashMap[String,String]]
+    jsonResponse.get("_id")
   }
 
   def sendSearchQuery(term:String):QueryResult = {
