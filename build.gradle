@@ -7,7 +7,7 @@ apply plugin: 'idea'
 apply plugin: 'idea-scala'
 
 apply plugin: 'maven'
-version = '0.1-SHAPSHOT'
+version = '0.1-SNAPSHOT'
 group = 'com.nevilon.firefly'
 
 jar.baseName = 'firefly-core'
@@ -31,10 +31,10 @@ repositories {
     maven {url 'https://raw.github.com/rodionmoiseev/maven-repo/master/repo/releases'}
 }
 
-jar {
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    manifest { attributes 'Main-Class': mainClassName }
-}
+//jar {
+//    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+//    manifest { attributes 'Main-Class': mainClassName }
+//}
 
 ideaScala {
     //IntelliJ library name for Scala compiler
