@@ -21,13 +21,13 @@ object Importer {
     //val a = mongoWrapper.getFileStream("a99Aahn3SVaQbc159AyxMQ")
     //println(a)
 
-    mongoWrapper.cleanMongo()
-  //  val result = ESWrapper.sendSearchQuery("amplifier")
+  //  mongoWrapper.cleanMongo()
+    val result = ESWrapper.sendSearchQuery("amplifier")
   //  println(result)
     //ESWrapper.search()
 
-    uploadAllToMongo()
-   sendToES()
+   // uploadAllToMongo()
+  // sendToES()
   }
 
   def uploadAllToMongo(){

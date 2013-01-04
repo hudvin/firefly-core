@@ -18,7 +18,7 @@ import scala.Predef._
  */
 object ESWrapper {
 
-  def sendToES(is: InputStream):String = {
+  def sendToES(is: InputStream): String = {
     val bytes = IOUtils.toByteArray(is)
     val encoded = Base64.encodeBase64(bytes)
 
@@ -31,11 +31,11 @@ object ESWrapper {
     post.setRequestEntity(requestEntity)
     val response = httpClient.executeMethod(post)
     val responseBody = post.getResponseBodyAsString
-    val jsonResponse  = Json.parse(responseBody).asInstanceOf[util.LinkedHashMap[String,String]]
+    val jsonResponse = Json.parse(responseBody).asInstanceOf[util.LinkedHashMap[String, String]]
     jsonResponse.get("_id")
   }
 
-  def sendSearchQuery(term:String):QueryResult = {
+  def sendSearchQuery(term: String): QueryResult = {
     val jsonQuery = buildSearchQuery(term)
     val httpClient = new HttpClient()
     val post = new PostMethod("http://localhost:9200/_search?pretty=true")
@@ -48,15 +48,15 @@ object ESWrapper {
     return queryResult
   }
 
-  def buildSearchQuery(term: String):String = {
+  def buildSearchQuery(term: String): String = {
     val data = Map("fields" -> Array("title"),
       "query" -> Map("query_string" -> Map("query" -> term)),
-      "highlight" -> Map("fields"->Map("file"->Map())))
+      "highlight" -> Map("fields" -> Map("file" -> Map())))
     val res = Json.generate(data)
     return res
   }
 
-  def parseSearchResponse(jsonResponse:String): QueryResult = {
+  def parseSearchResponse(jsonResponse: String): QueryResult = {
     val json: util.LinkedHashMap[String, String] = Json.parse(jsonResponse)
 
     import scala.collection.JavaConversions._
@@ -106,8 +106,9 @@ object ESWrapper {
             hitResult.score = kv._2.asInstanceOf[Double]
           }
           case "highlight" => {
-            kv._2.asInstanceOf[util.LinkedHashMap[String, String]].foreach(field => {
-              hitResult.highlight.put(field._1, field._2)
+            kv._2.asInstanceOf[util.LinkedHashMap[String, util.ArrayList[String]]].foreach(field => {
+              val list = field._2.toList
+              hitResult.highlight.put(field._1, list)
             })
           }
           case "fields" => {
@@ -125,7 +126,7 @@ object ESWrapper {
     )
 
 
-    return  queryResult
+    return queryResult
   }
 
 }

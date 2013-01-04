@@ -31,7 +31,7 @@ class HitResult{
   var id:String  = ""
   var score:Double = 0.0d
   var fields = mutable.HashMap[String,String]()
-  var highlight = mutable.HashMap[String,String]()
+  var highlight = mutable.HashMap[String,List[String]]()
 
 
 }

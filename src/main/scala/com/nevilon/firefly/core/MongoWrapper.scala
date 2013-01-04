@@ -61,20 +61,13 @@ class MongoWrapper {
     //val imageForOutput = fsStorage.findOne(newFileName_)
   }
 
-  def getFileStream(esId:String):InputStream={
-    val fileDoc = coll.findOne(new BasicDBObject("es_id", esId))
-    val file = fsStorage.findOne(new ObjectId(fileDoc.get("file_oid").toString  ))
-    println(fileDoc)
-    println(file)
-    file.getInputStream
+  def getFileDoc(esId:String):DBObject = {
+    coll.findOne(new BasicDBObject("es_id", esId))
+  }
 
-
-    /*
-    val imageForOutput = fsStorage.findOne(newFileName)
-    imageForOutput.writeTo("c:\\JavaWebHostingNew.pn")
-    println(imageForOutput)
-    */
-
+  def getFile(esId:String):GridFSDBFile={
+    val fileDoc = getFileDoc(esId)
+    fsStorage.findOne(new ObjectId(fileDoc.get("file_oid").toString  ))
   }
 
 }
